@@ -1,14 +1,35 @@
+const request = require('request');
+const apiURL = require('./apiURLs');
 
 const winnerlist = function(req, res){
-    res.render('topplayers',{
-        winners:
-        [
-            {season:'2017-2018', player:'Connor McDavid', team: 'Edmonton Oilers', score: '108'},
-            {season:'2016-2017', player:'Connor McDavid', team: 'Edmonton Oilers', score: '100'},
-            {season:'2015-2016', player:'Patrick Kane', team: 'Chicago BlackHawks', score: '106'},
-            {season:'2014-2015', player:'Jamie Benn', team: 'Dallas Stars', score: '86'},
-            {season:'2013-2014', player:'Sidney Crosby', team: 'Pittsburgh Penguins', score: '104'}
-        ]});
+    const path = '/api/topplayers';
+    const requestOptions = {
+        url: apiURL.server + path,
+        method : 'GET',
+        json : {},
+        qs : {}
+    };
+    
+    request(
+        requestOptions,
+        function (err, response, body){
+            if (err){
+                res.render('error', {message: err.message});
+            }
+            else if (response.statusCode != 200){
+                res.render('error', {message: 'Error accessing API: ' + response.statusMessage + " ("+ response.statusCode + ")" });
+            }
+            else if (!(body instanceof Array)) {
+                res.render('error', {message: 'Unexpected response data'});
+            }
+            else if (!body.length){
+                res.render('error', {message: 'No documents in collection'});
+            }
+            else {
+                res.render('topplayers', {winners: body});
+            }
+        }
+    );
 };
 
 module.exports = {
