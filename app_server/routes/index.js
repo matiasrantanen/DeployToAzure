@@ -11,4 +11,14 @@ router.get('/', ctrlMain.index);  // Home page
 router.get('/stanleycup', ctrlStanleyCup.winnerlist);  // List of stanley cup winning teams
 router.get('/topplayers', ctrlTopPlayers.winnerlist);  // List of top players
 
+router 
+    .route('/stanleycup/add')
+    .get(ctrlStanleyCup.showForm) //Display form
+    .post(ctrlStanleyCup.addData); //Get form data and make API call
+
+router
+    .route('/topplayers/add')
+    .get(ctrlTopPlayers.showForm) //Display form
+    .post(ctrlTopPlayers.addData); //Get form data and make API call
+
 module.exports = router;
